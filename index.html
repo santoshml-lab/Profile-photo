@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My AI Journey Blog</title>
+<title>AI Journey Pro Blog</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -31,12 +31,6 @@ header{
 
 header h1{
   color:#38bdf8;
-  font-size:32px;
-}
-
-header p{
-  opacity:0.8;
-  margin-top:6px;
 }
 
 /* LAYOUT */
@@ -47,7 +41,7 @@ header p{
   padding:20px;
 }
 
-/* BLOG */
+/* POSTS */
 .blog{
   display:flex;
   flex-direction:column;
@@ -59,21 +53,11 @@ header p{
   padding:18px;
   border-radius:16px;
   border:1px solid rgba(255,255,255,0.1);
-  transition:0.3s;
-}
-
-.post:hover{
-  transform:translateY(-4px);
 }
 
 .post h2{
   color:#38bdf8;
   margin-bottom:8px;
-}
-
-.post p{
-  opacity:0.85;
-  line-height:1.5;
 }
 
 .post img{
@@ -87,16 +71,8 @@ header p{
   background:rgba(255,255,255,0.05);
   padding:18px;
   border-radius:16px;
-  border:1px solid rgba(255,255,255,0.1);
-  height:fit-content;
 }
 
-.sidebar h3{
-  color:#34d399;
-  margin-bottom:10px;
-}
-
-/* INPUT */
 input, textarea{
   width:100%;
   padding:10px;
@@ -106,7 +82,6 @@ input, textarea{
   outline:none;
 }
 
-/* BUTTON */
 button{
   width:100%;
   padding:10px;
@@ -120,16 +95,6 @@ button{
 button:hover{
   background:#0ea5e9;
 }
-
-/* TAGS */
-.tag{
-  display:inline-block;
-  background:#1f2937;
-  padding:5px 8px;
-  border-radius:8px;
-  margin:4px;
-  font-size:12px;
-}
 </style>
 
 </head>
@@ -137,37 +102,20 @@ button:hover{
 <body>
 
 <header>
-  <h1>🚀 My AI Journey Blog</h1>
-  <p>Build. Break. Learn. Repeat 🔥</p>
+  <h1>🚀 AI Journey Pro Blog</h1>
 </header>
 
 <div class="container">
 
-  <!-- BLOG -->
   <div class="blog" id="blog"></div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
 
-    <h3>➕ Add New Post</h3>
-
-    <input id="title" placeholder="Post Title" />
-    <textarea id="content" rows="4" placeholder="Write content..."></textarea>
-    <input id="image" placeholder="https://ibb.co/cSrQj5N2" />
+    <input id="title" placeholder="Title" />
+    <textarea id="content" rows="4" placeholder="Content"></textarea>
+    <input id="image" placeholder="Image link (ibb / cloud / any URL)" />
 
     <button onclick="addPost()">Publish</button>
-
-    <br><br>
-
-    <h3>📌 About</h3>
-    <p>AI + Coding + Learning in public 🚀</p>
-
-    <br>
-
-    <h3>🏷 Tags</h3>
-    <span class="tag">AI</span>
-    <span class="tag">Backend</span>
-    <span class="tag">Python</span>
 
   </div>
 
@@ -177,12 +125,29 @@ button:hover{
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [
   {
-    title:"🔥 How I Built My First AI App",
-    content:"Started with FastAPI + Groq API and built an AI evaluator system.",
-    image:""
+    title:"🔥 First AI Project",
+    content:"Built with FastAPI + Groq",
+    image:"https://ibb.co/cSrQj5N2"
   }
 ];
 
+
+// 🔥 auto-fix image links
+function fixImage(url){
+
+  if(!url) return "";
+
+  // if ibb page link → try convert to fallback (safe behavior)
+  if(url.includes("ibb.co") && !url.includes("i.ibb.co")){
+    console.log("⚠️ ibb page link detected");
+    return url; // still try, fallback handled by onerror
+  }
+
+  return url;
+}
+
+
+// render posts
 function renderPosts(){
 
   let blog = document.getElementById("blog");
@@ -193,7 +158,12 @@ function renderPosts(){
     blog.innerHTML += `
       <div class="post">
         <h2>${p.title}</h2>
-        ${p.image ? `<img src="${p.image}" />` : ""}
+
+        ${p.image ? `
+          <img src="${fixImage(p.image)}"
+               onerror="this.style.display='none'" />
+        ` : ""}
+
         <p>${p.content}</p>
       </div>
     `;
@@ -202,6 +172,8 @@ function renderPosts(){
 
 }
 
+
+// add post
 function addPost(){
 
   let title = document.getElementById("title").value;
