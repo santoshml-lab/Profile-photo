@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +23,7 @@ header{
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* LAYOUT */
+/* FEED CONTAINER */
 .container{
   max-width:500px;
   margin:auto;
@@ -36,8 +35,10 @@ header{
   background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.1);
   border-radius:18px;
+  overflow:hidden; /* 🔥 IMPORTANT FIX */
   margin-bottom:15px;
-  overflow:hidden;
+  display:flex;
+  flex-direction:column;
   transition:0.3s;
 }
 
@@ -51,30 +52,31 @@ header{
   height:320px;
   object-fit:cover;
   display:block;
-  cursor:pointer;
 }
 
-/* CONTENT */
+/* CONTENT INSIDE SAME BOX */
 .post-content{
-  padding:12px;
+  padding:14px;
   display:flex;
   flex-direction:column;
   gap:6px;
 }
 
+/* TITLE */
 .post-title{
   font-size:16px;
+  font-weight:600;
   color:#38bdf8;
-  font-weight:bold;
 }
 
+/* TEXT */
 .post-text{
   font-size:13px;
-  opacity:0.85;
+  opacity:0.9;
   line-height:1.4;
 }
 
-/* INPUT BOX */
+/* CREATE POST */
 .create{
   position:sticky;
   bottom:0;
@@ -101,25 +103,6 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
-
-/* LIGHTBOX */
-.lightbox{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.85);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.lightbox img{
-  max-width:90%;
-  max-height:90%;
-  border-radius:12px;
-}
 </style>
 
 </head>
@@ -136,11 +119,6 @@ button{
   <textarea id="content" placeholder="Write something..."></textarea>
   <input id="image" placeholder="Image URL"/>
   <button onclick="addPost()">Post</button>
-</div>
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeImg()">
-  <img id="bigimg">
 </div>
 
 <script>
@@ -163,7 +141,7 @@ function render(){
     feed.innerHTML += `
       <div class="post">
 
-        <img src="${p.image}" onclick="openImg(this.src)" />
+        <img src="${p.image}" />
 
         <div class="post-content">
           <div class="post-title">${p.title}</div>
@@ -185,7 +163,11 @@ function addPost(){
 
   if(!t || !c) return;
 
-  posts.unshift({title:t, content:c, image:i});
+  posts.unshift({
+    title:t,
+    content:c,
+    image:i
+  });
 
   localStorage.setItem("posts", JSON.stringify(posts));
 
@@ -194,15 +176,6 @@ function addPost(){
   document.getElementById("image").value="";
 
   render();
-}
-
-function openImg(src){
-  document.getElementById("lightbox").style.display="flex";
-  document.getElementById("bigimg").src=src;
-}
-
-function closeImg(){
-  document.getElementById("lightbox").style.display="none";
 }
 
 render();
