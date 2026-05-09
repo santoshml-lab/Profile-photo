@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Insta Feed</title>
+<title>Multi Image Feed</title>
 
 <style>
 body{
@@ -20,10 +20,9 @@ header{
   color:#38bdf8;
   font-size:20px;
   font-weight:bold;
-  border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* FEED CONTAINER */
+/* FEED */
 .container{
   max-width:500px;
   margin:auto;
@@ -35,48 +34,43 @@ header{
   background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.1);
   border-radius:18px;
-  overflow:hidden; /* 🔥 IMPORTANT FIX */
+  overflow:hidden;
   margin-bottom:15px;
+}
+
+/* IMAGE SCROLL (CAROUSEL) */
+.images{
   display:flex;
-  flex-direction:column;
-  transition:0.3s;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
 }
 
-.post:hover{
-  transform:scale(1.01);
-}
-
-/* IMAGE */
-.post img{
+.images img{
   width:100%;
-  height:320px;
+  flex:0 0 100%;
+  height:300px;
   object-fit:cover;
-  display:block;
+  scroll-snap-align:start;
 }
 
-/* CONTENT INSIDE SAME BOX */
+/* CONTENT */
 .post-content{
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+  padding:12px;
 }
 
-/* TITLE */
 .post-title{
-  font-size:16px;
-  font-weight:600;
   color:#38bdf8;
+  font-size:16px;
+  font-weight:bold;
 }
 
-/* TEXT */
 .post-text{
   font-size:13px;
-  opacity:0.9;
-  line-height:1.4;
+  opacity:0.85;
+  margin-top:5px;
 }
 
-/* CREATE POST */
+/* INPUT */
 .create{
   position:sticky;
   bottom:0;
@@ -101,7 +95,6 @@ button{
   border:none;
   border-radius:10px;
   font-weight:bold;
-  cursor:pointer;
 }
 </style>
 
@@ -109,15 +102,14 @@ button{
 
 <body>
 
-<header>📱 AI Insta Feed Pro</header>
+<header>📱 Multi Image Feed Pro</header>
 
 <div class="container" id="feed"></div>
 
-<!-- CREATE POST -->
 <div class="create">
   <input id="title" placeholder="Title"/>
-  <textarea id="content" placeholder="Write something..."></textarea>
-  <input id="image" placeholder="Image URL"/>
+  <textarea id="content" placeholder="Content"></textarea>
+  <input id="images" placeholder="Image URLs (comma separated)"/>
   <button onclick="addPost()">Post</button>
 </div>
 
@@ -125,9 +117,13 @@ button{
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [
   {
-    title:"🔥 My First AI Project",
-    content:"Built an AI evaluator using FastAPI + Groq API 🚀",
-    image:"https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg"
+    title:"🔥 My AI Journey",
+    content:"Multiple images demo post 🚀",
+    images:[
+      "https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg",
+      "https://picsum.photos/500/300",
+      "https://picsum.photos/501/300"
+    ]
   }
 ];
 
@@ -138,10 +134,18 @@ function render(){
 
   posts.forEach(p => {
 
+    let imgs = "";
+
+    p.images.forEach(img => {
+      imgs += `<img src="${img}" />`;
+    });
+
     feed.innerHTML += `
       <div class="post">
 
-        <img src="${p.image}" />
+        <div class="images">
+          ${imgs}
+        </div>
 
         <div class="post-content">
           <div class="post-title">${p.title}</div>
@@ -157,23 +161,25 @@ function render(){
 
 function addPost(){
 
-  let t = document.getElementById("title").value.trim();
-  let c = document.getElementById("content").value.trim();
-  let i = document.getElementById("image").value.trim();
+  let t = document.getElementById("title").value;
+  let c = document.getElementById("content").value;
+  let i = document.getElementById("images").value;
 
-  if(!t || !c) return;
+  if(!t || !c || !i) return;
+
+  let imgArray = i.split(",");
 
   posts.unshift({
     title:t,
     content:c,
-    image:i
+    images:imgArray
   });
 
   localStorage.setItem("posts", JSON.stringify(posts));
 
   document.getElementById("title").value="";
   document.getElementById("content").value="";
-  document.getElementById("image").value="";
+  document.getElementById("images").value="";
 
   render();
 }
