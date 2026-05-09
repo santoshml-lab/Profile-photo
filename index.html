@@ -1,109 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Insta Pro AI Feed</title>
+<title>AI Feed App</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0b0f1a;
+  background:#0b1220;
   color:white;
 }
 
-/* TOP BAR */
+/* HEADER */
 header{
   text-align:center;
-  padding:12px;
-  font-size:18px;
+  padding:15px;
   color:#38bdf8;
+  font-size:22px;
   font-weight:bold;
-  border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* STORY BAR */
-.stories{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  overflow-x:auto;
+/* MAIN LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:20px;
+  padding:20px;
 }
 
-.story{
-  min-width:60px;
-  height:60px;
-  border-radius:50%;
-  border:2px solid #38bdf8;
-}
-
-/* FEED */
-.feed{
-  max-width:500px;
-  margin:auto;
-  padding:10px;
-}
-
-/* POST */
-.post{
+/* SIDEBAR */
+.sidebar{
   background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:18px;
-  margin-bottom:15px;
-  overflow:hidden;
-}
-
-/* IMAGE */
-.post img{
-  width:100%;
-  height:320px;
-  object-fit:cover;
-}
-
-/* CONTENT */
-.post-content{
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.title{
-  color:#38bdf8;
-  font-weight:bold;
-}
-
-.text{
-  font-size:13px;
-  opacity:0.85;
-  line-height:1.4;
-}
-
-/* ACTIONS */
-.actions{
-  padding:10px 12px;
-  display:flex;
-  justify-content:space-between;
-  font-size:14px;
-}
-
-/* INPUT BOX */
-.create{
+  padding:15px;
+  border-radius:16px;
   position:sticky;
-  bottom:0;
-  background:#0b0f1a;
-  padding:10px;
-  border-top:1px solid rgba(255,255,255,0.1);
+  top:10px;
+  height:fit-content;
 }
 
 input, textarea{
   width:100%;
-  margin:5px 0;
+  margin:8px 0;
   padding:10px;
   border-radius:10px;
   border:none;
+  outline:none;
 }
 
 button{
@@ -113,6 +56,70 @@ button{
   border:none;
   border-radius:10px;
   font-weight:bold;
+  cursor:pointer;
+}
+
+/* FEED */
+.feed{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+/* POST CARD (INSTAGRAM STYLE) */
+.post{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  overflow:hidden;
+  transition:0.3s;
+}
+
+.post:hover{
+  transform:scale(1.01);
+}
+
+/* IMAGE */
+.post img{
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+/* CONTENT */
+.post-content{
+  padding:12px;
+}
+
+.post-title{
+  font-size:16px;
+  color:#38bdf8;
+  margin-bottom:5px;
+}
+
+.post-text{
+  font-size:13px;
+  opacity:0.85;
+}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.lightbox img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:12px;
 }
 </style>
 
@@ -120,32 +127,34 @@ button{
 
 <body>
 
-<header>📱 Insta AI Feed Pro</header>
+<header>🚀 AI Feed (Instagram Style)</header>
 
-<!-- STORIES -->
-<div class="stories">
-  <img class="story" src="https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg">
-  <img class="story" src="https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg">
-  <img class="story" src="https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg">
-</div>
+<div class="container">
 
-<!-- FEED -->
-<div class="feed" id="feed"></div>
-
-<!-- CREATE -->
-<div class="create">
+<!-- SIDEBAR -->
+<div class="sidebar">
   <input id="title" placeholder="Title"/>
   <textarea id="content" placeholder="Write something..."></textarea>
   <input id="image" placeholder="Image URL"/>
   <button onclick="addPost()">Post</button>
 </div>
 
+<!-- FEED -->
+<div class="feed" id="feed"></div>
+
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeImg()">
+  <img id="bigimg">
+</div>
+
 <script>
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [
   {
-    title:"🔥 My AI Journey Moment",
-    content:"Built my first AI app step by step 🚀",
+    title:"My First AI Project 🚀",
+    content:"Built an AI evaluator using FastAPI + Groq",
     image:"https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg"
   }
 ];
@@ -160,17 +169,11 @@ function render(){
     feed.innerHTML += `
       <div class="post">
 
-        <img src="${p.image}" />
+        <img src="${p.image}" onclick="openImg(this.src)" />
 
         <div class="post-content">
-          <div class="title">${p.title}</div>
-          <div class="text">${p.content}</div>
-        </div>
-
-        <div class="actions">
-          <div>❤️ Like</div>
-          <div>💬 Comment</div>
-          <div>🔖 Save</div>
+          <div class="post-title">${p.title}</div>
+          <div class="post-text">${p.content}</div>
         </div>
 
       </div>
@@ -192,11 +195,20 @@ function addPost(){
 
   localStorage.setItem("posts", JSON.stringify(posts));
 
-  document.getElementById("title").value="";
-  document.getElementById("content").value="";
-  document.getElementById("image").value="";
+  document.getElementById("title").value = "";
+  document.getElementById("content").value = "";
+  document.getElementById("image").value = "";
 
   render();
+}
+
+function openImg(src){
+  document.getElementById("lightbox").style.display = "flex";
+  document.getElementById("bigimg").src = src;
+}
+
+function closeImg(){
+  document.getElementById("lightbox").style.display = "none";
 }
 
 render();
