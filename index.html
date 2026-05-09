@@ -1,8 +1,13 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My AI Journey Blog (Dynamic)</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
+<title>My AI Journey Blog</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
 *{
   margin:0;
   padding:0;
@@ -16,6 +21,7 @@ body{
   min-height:100vh;
 }
 
+/* HEADER */
 header{
   padding:25px;
   text-align:center;
@@ -33,6 +39,7 @@ header p{
   margin-top:6px;
 }
 
+/* LAYOUT */
 .container{
   display:grid;
   grid-template-columns:3fr 1fr;
@@ -40,6 +47,7 @@ header p{
   padding:20px;
 }
 
+/* BLOG */
 .blog{
   display:flex;
   flex-direction:column;
@@ -68,6 +76,13 @@ header p{
   line-height:1.5;
 }
 
+.post img{
+  width:100%;
+  border-radius:12px;
+  margin:10px 0;
+}
+
+/* SIDEBAR */
 .sidebar{
   background:rgba(255,255,255,0.05);
   padding:18px;
@@ -81,6 +96,7 @@ header p{
   margin-bottom:10px;
 }
 
+/* INPUT */
 input, textarea{
   width:100%;
   padding:10px;
@@ -90,6 +106,7 @@ input, textarea{
   outline:none;
 }
 
+/* BUTTON */
 button{
   width:100%;
   padding:10px;
@@ -104,6 +121,7 @@ button:hover{
   background:#0ea5e9;
 }
 
+/* TAGS */
 .tag{
   display:inline-block;
   background:#1f2937;
@@ -112,34 +130,56 @@ button:hover{
   margin:4px;
   font-size:12px;
 }
+</style>
 
-</style></head><body><header>
-  <h1>🚀 My AI Journey Blog (Dynamic)</h1>
-  <p>Now you can add posts live 🔥</p>
-</header><div class="container">  <div class="blog" id="blog"></div>  <div class="sidebar"><h3>➕ Add New Post</h3>
+</head>
 
-<input id="title" placeholder="Post Title" />
-<textarea id="content" rows="4" placeholder="Write content..."></textarea>
-<button onclick="addPost()">Publish</button>
+<body>
 
-<br><br>
+<header>
+  <h1>🚀 My AI Journey Blog</h1>
+  <p>Build. Break. Learn. Repeat 🔥</p>
+</header>
 
-<h3>📌 About</h3>
-<p>AI + Coding + Learning in public 🚀</p>
+<div class="container">
 
-<br>
+  <!-- BLOG -->
+  <div class="blog" id="blog"></div>
 
-<h3>🏷 Tags</h3>
-<span class="tag">AI</span>
-<span class="tag">Backend</span>
-<span class="tag">Python</span>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
 
-  </div></div><script>
+    <h3>➕ Add New Post</h3>
+
+    <input id="title" placeholder="Post Title" />
+    <textarea id="content" rows="4" placeholder="Write content..."></textarea>
+    <input id="image" placeholder="Image URL (optional)" />
+
+    <button onclick="addPost()">Publish</button>
+
+    <br><br>
+
+    <h3>📌 About</h3>
+    <p>AI + Coding + Learning in public 🚀</p>
+
+    <br>
+
+    <h3>🏷 Tags</h3>
+    <span class="tag">AI</span>
+    <span class="tag">Backend</span>
+    <span class="tag">Python</span>
+
+  </div>
+
+</div>
+
+<script>
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [
   {
     title:"🔥 How I Built My First AI App",
-    content:"Started with FastAPI + Groq API and built an AI evaluator system."
+    content:"Started with FastAPI + Groq API and built an AI evaluator system.",
+    image:""
   }
 ];
 
@@ -153,6 +193,7 @@ function renderPosts(){
     blog.innerHTML += `
       <div class="post">
         <h2>${p.title}</h2>
+        ${p.image ? `<img src="${p.image}" />` : ""}
         <p>${p.content}</p>
       </div>
     `;
@@ -165,20 +206,28 @@ function addPost(){
 
   let title = document.getElementById("title").value;
   let content = document.getElementById("content").value;
+  let image = document.getElementById("image").value;
 
   if(!title || !content) return;
 
-  posts.unshift({title, content});
+  posts.unshift({
+    title,
+    content,
+    image
+  });
 
   localStorage.setItem("posts", JSON.stringify(posts));
 
   document.getElementById("title").value = "";
   document.getElementById("content").value = "";
+  document.getElementById("image").value = "";
 
   renderPosts();
 }
 
 renderPosts();
 
-</script></body>
+</script>
+
+</body>
 </html>
