@@ -1,0 +1,184 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My AI Journey Blog (Dynamic)</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#0f172a,#111827);
+  color:white;
+  min-height:100vh;
+}
+
+header{
+  padding:25px;
+  text-align:center;
+  background:rgba(255,255,255,0.05);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+header h1{
+  color:#38bdf8;
+  font-size:32px;
+}
+
+header p{
+  opacity:0.8;
+  margin-top:6px;
+}
+
+.container{
+  display:grid;
+  grid-template-columns:3fr 1fr;
+  gap:20px;
+  padding:20px;
+}
+
+.blog{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.post{
+  background:rgba(255,255,255,0.05);
+  padding:18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.3s;
+}
+
+.post:hover{
+  transform:translateY(-4px);
+}
+
+.post h2{
+  color:#38bdf8;
+  margin-bottom:8px;
+}
+
+.post p{
+  opacity:0.85;
+  line-height:1.5;
+}
+
+.sidebar{
+  background:rgba(255,255,255,0.05);
+  padding:18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1);
+  height:fit-content;
+}
+
+.sidebar h3{
+  color:#34d399;
+  margin-bottom:10px;
+}
+
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#38bdf8;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  background:#0ea5e9;
+}
+
+.tag{
+  display:inline-block;
+  background:#1f2937;
+  padding:5px 8px;
+  border-radius:8px;
+  margin:4px;
+  font-size:12px;
+}
+
+</style></head><body><header>
+  <h1>🚀 My AI Journey Blog (Dynamic)</h1>
+  <p>Now you can add posts live 🔥</p>
+</header><div class="container">  <div class="blog" id="blog"></div>  <div class="sidebar"><h3>➕ Add New Post</h3>
+
+<input id="title" placeholder="Post Title" />
+<textarea id="content" rows="4" placeholder="Write content..."></textarea>
+<button onclick="addPost()">Publish</button>
+
+<br><br>
+
+<h3>📌 About</h3>
+<p>AI + Coding + Learning in public 🚀</p>
+
+<br>
+
+<h3>🏷 Tags</h3>
+<span class="tag">AI</span>
+<span class="tag">Backend</span>
+<span class="tag">Python</span>
+
+  </div></div><script>
+
+let posts = JSON.parse(localStorage.getItem("posts")) || [
+  {
+    title:"🔥 How I Built My First AI App",
+    content:"Started with FastAPI + Groq API and built an AI evaluator system."
+  }
+];
+
+function renderPosts(){
+
+  let blog = document.getElementById("blog");
+  blog.innerHTML = "";
+
+  posts.forEach(p => {
+
+    blog.innerHTML += `
+      <div class="post">
+        <h2>${p.title}</h2>
+        <p>${p.content}</p>
+      </div>
+    `;
+
+  });
+
+}
+
+function addPost(){
+
+  let title = document.getElementById("title").value;
+  let content = document.getElementById("content").value;
+
+  if(!title || !content) return;
+
+  posts.unshift({title, content});
+
+  localStorage.setItem("posts", JSON.stringify(posts));
+
+  document.getElementById("title").value = "";
+  document.getElementById("content").value = "";
+
+  renderPosts();
+}
+
+renderPosts();
+
+</script></body>
+</html>
