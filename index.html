@@ -3,34 +3,103 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My AI Journey Blog</title>
+<title>AI Journey Pro App</title>
 
 <style>
 body{
-  font-family: Arial;
+  margin:0;
+  font-family:Arial;
   background:#0f172a;
   color:white;
-  margin:0;
-  padding:20px;
 }
 
-.post{
-  background:rgba(255,255,255,0.05);
+/* HEADER */
+header{
+  text-align:center;
   padding:20px;
-  border-radius:16px;
-  max-width:600px;
-  margin:auto;
-  border:1px solid rgba(255,255,255,0.1);
-}
-
-.post h2{
   color:#38bdf8;
 }
 
-.post img{
-  width:100%;
+/* LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:20px;
+  padding:20px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:rgba(255,255,255,0.05);
+  padding:15px;
   border-radius:12px;
-  margin:10px 0;
+}
+
+input, textarea{
+  width:100%;
+  margin:8px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#38bdf8;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* GALLERY */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  padding:10px;
+  border-radius:12px;
+  text-align:center;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.05);
+}
+
+.card img{
+  width:100%;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.card h4{
+  color:#38bdf8;
+  font-size:14px;
+}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.lightbox img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:12px;
 }
 </style>
 
@@ -38,21 +107,92 @@ body{
 
 <body>
 
-<div class="post">
+<header>
+  <h1>🚀 AI Journey Pro App</h1>
+</header>
 
-  <h2>🔥 My AI Journey Moment</h2>
+<div class="container">
 
-  <a href="https://ibb.co/cSrQj5N2">
-    <img src="https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg" 
-         alt="AI Image" />
-  </a>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h3>➕ Add Post</h3>
 
-  <p>
-    This is my learning milestone 🚀  
-    Building AI apps step by step and improving every day.
-  </p>
+  <input id="title" placeholder="Title"/>
+  <textarea id="content" placeholder="Content"></textarea>
+  <input id="image" placeholder="Image URL"/>
+
+  <button onclick="addPost()">Publish</button>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery" id="gallery"></div>
 
 </div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeImg()">
+  <img id="bigimg">
+</div>
+
+<script>
+
+let posts = JSON.parse(localStorage.getItem("posts")) || [
+  {
+    title:"My AI Journey",
+    content:"Built my first AI project 🚀",
+    image:"https://i.ibb.co/W42fL9cB/IMG-20260224-WA0001.jpg"
+  }
+];
+
+function render(){
+
+  let g = document.getElementById("gallery");
+  g.innerHTML = "";
+
+  posts.forEach(p => {
+
+    g.innerHTML += `
+      <div class="card">
+        <img src="${p.image}" onclick="openImg(this.src)" />
+        <h4>${p.title}</h4>
+      </div>
+    `;
+
+  });
+
+}
+
+function addPost(){
+
+  let t = document.getElementById("title").value;
+  let c = document.getElementById("content").value;
+  let i = document.getElementById("image").value;
+
+  if(!t || !c) return;
+
+  posts.unshift({title:t, content:c, image:i});
+
+  localStorage.setItem("posts", JSON.stringify(posts));
+
+  document.getElementById("title").value = "";
+  document.getElementById("content").value = "";
+  document.getElementById("image").value = "";
+
+  render();
+}
+
+function openImg(src){
+  document.getElementById("lightbox").style.display = "flex";
+  document.getElementById("bigimg").src = src;
+}
+
+function closeImg(){
+  document.getElementById("lightbox").style.display = "none";
+}
+
+render();
+
+</script>
 
 </body>
 </html>
